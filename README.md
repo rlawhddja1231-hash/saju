@@ -11,6 +11,8 @@ You:    Read my saju. 1990-05-15, 2:30 pm, female, born in Seoul.
 Claude: (runs saju.py) …庚午 / 辛巳 / 庚辰 / 癸未, Day Master 庚 Metal…
 ```
 
+![Example chart (Korean output)](docs/img/chart-ko.jpg)
+
 ## What makes it different
 
 | | saju (this) | a chatbot guessing |
