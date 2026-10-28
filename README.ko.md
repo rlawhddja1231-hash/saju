@@ -43,7 +43,7 @@ AI한테 사주를 물으면 기둥(간지)을 **외워서 짐작**합니다. �
 ```
 
 ### claude.ai (웹·앱)
-1. [Releases](https://github.com/rlawhddja1231-hash/saju/releases)에서 `saju.zip`을 받습니다.
+1. [`saju.zip`](https://github.com/rlawhddja1231-hash/saju/raw/main/dist/saju.zip)을 받습니다.
 2. claude.ai → 사용자 지정 → Skills → **+ 추가 → Skill 업로드**로 올립니다.
 3. 코드 실행 기능이 켜져 있어야 합니다.
 

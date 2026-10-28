@@ -49,7 +49,7 @@ Claude: (runs saju.py) …庚午 / 辛巳 / 庚辰 / 癸未, Day Master 庚 Meta
 ```
 
 ### claude.ai (web and app)
-1. Download `saju.zip` from [Releases](https://github.com/rlawhddja1231-hash/saju/releases).
+1. Download [`saju.zip`](https://github.com/rlawhddja1231-hash/saju/raw/main/dist/saju.zip).
 2. Go to claude.ai → Customize → Skills → **+ Add → Upload skill**.
 3. Code execution must be turned on.
 
