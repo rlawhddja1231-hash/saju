@@ -1,0 +1,15 @@
+{
+  "name": "saju-plugins",
+  "owner": { "name": "rlawhddja1231-hash", "url": "https://github.com/rlawhddja1231-hash" },
+  "description": "Accurate Korean saju / Chinese BaZi (Four Pillars) for Claude",
+  "plugins": [
+    {
+      "name": "saju",
+      "source": "./plugins/saju",
+      "description": "Claude calculates your Four Pillars (사주팔자/BaZi) instead of guessing: exact solar terms, Korean DST and lunar calendar, luck pillars, compatibility.",
+      "version": "1.0.0",
+      "category": "lifestyle",
+      "tags": ["saju", "bazi", "four-pillars", "korean", "astrology", "manseryeok"]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+## Compatibility
+- A: 1990-05-15 14:30 → Y/M/D/H 庚午 辛巳 庚辰 癸未, Day Master 庚 (Metal), elements Wood 0 Fire 2 Earth 2 Metal 3 Water 1
+- B: 1988-07-01 23:20 → Y/M/D/H 戊辰 戊午 丁巳 辛亥, Day Master 丁 (Fire), elements Wood 0 Fire 3 Earth 3 Metal 1 Water 1
+- Day Masters: to A, B is **Direct Officer**; to B, A is **Direct Wealth**
+- Day pillars (spouse palace): no special combination or clash
+- Combinations between charts: 3, conflicts (clash/punishment/harm/break/resentment): 5
+  - A Year–B Month: 午午 self punishment
+  - A Month–B Hour: 巳亥 clash
+  - A Day–B Year: 辰辰 self punishment
+  - A Day–B Hour: 辰亥 resentment
+  - A Hour–B Year: 癸戊 combine → 火
+  - A Hour–B Month: 癸戊 combine → 火
+  - A Hour–B Month: 未午 combine → 火
+  - A Hour–B Day: 癸丁 clash
+- B: ※ Daylight saving time: subtracted 60 min (clock 23:20 → standard 22:20)
