@@ -37,6 +37,7 @@ Claude: (runs saju.py) …庚午 / 辛巳 / 庚辰 / 癸未, Day Master 庚 Meta
 - Common symbolic stars: Nobleman, Peach Blossom, Travelling Horse, Canopy, Yang Blade, 괴강, and Void
 - **Luck pillars (대운)** with exact start age, plus **annual pillars (세운)** and how each year hits your chart
 - **Compatibility (궁합)** between two people: day-master relation, spouse-palace relation, cross-chart combos and clashes, and which elements each person fills for the other
+- **Yearly fortune by zodiac animal (띠별 운세)**: each animal's clash/harmony with the year and the Korean *sam-jae* (3 hard years), with the animal decided at Start of Spring (not Jan 1 or Lunar New Year)
 - Today's day pillar (일진), 24 solar terms of any year, and solar ↔ lunar conversion
 - Korean or English output (`--lang en`) for every command, plus `--json` for the full data
 
@@ -61,6 +62,7 @@ Just talk to Claude:
 - "Lunar 1990-04-21, time unknown, male. What's my luck pillar now?"
 - "Compatibility: me 1990-05-15 14:30 f, him 1988-07-01 23:20 m"
 - "What's today's day pillar?"
+- "Show the 2026 fortune for each zodiac animal"
 
 Or run the calculator yourself:
 

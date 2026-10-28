@@ -24,7 +24,7 @@ import os
 import sys
 from datetime import date, datetime, timedelta, timezone
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(os.path.dirname(HERE), "data")
@@ -965,6 +965,120 @@ def md_compat(r, lang="ko"):
     return "\n".join(L)
 
 
+# ------------------------------------------------------------------ 띠별 운세
+SAMJAE = {8: (2, 3, 4), 0: (2, 3, 4), 4: (2, 3, 4), 2: (8, 9, 10), 6: (8, 9, 10), 10: (8, 9, 10),
+          5: (11, 0, 1), 9: (11, 0, 1), 1: (11, 0, 1), 11: (5, 6, 7), 3: (5, 6, 7), 7: (5, 6, 7)}
+SAMJAE_KO = ["들삼재", "눌삼재", "날삼재"]
+SAMJAE_EN = ["entering", "staying", "leaving"]
+
+
+def ddi_year(target_year, lang="ko"):
+    """target_year 해의 간지와 12띠 각각의 관계(충·합·형·해·파·원진·삼재·본명년)."""
+    ti = year_pillar_of(target_year)
+    tz = ti % 12
+    rows = []
+    for z in range(12):
+        rel = []
+        k = frozenset((z, tz))
+        if z == tz:
+            rel.append(("본명년", "내 띠의 해"))
+        if k in ZHI_CHONG:
+            rel.append(("충", "부딪힘·변화·이동"))
+        if k in ZHI_LIUHE:
+            rel.append(("육합", "도움·인연"))
+        for grp, el in SANHE:
+            if z in grp and tz in grp and z != tz:
+                rel.append(("삼합", "같은 편·협력"))
+        for grp, el in FANGHE:
+            if z in grp and tz in grp and z != tz:
+                rel.append(("방합", "같은 계절·뭉침"))
+        if k == XING_ZIMAO:
+            rel.append(("형", "긴장·조정"))
+        for grp, name in XING3:
+            if z in grp and tz in grp and z != tz:
+                rel.append(("형", "긴장·조정"))
+        if z == tz and z in SELF_XING:
+            rel.append(("자형", "스스로 다그침"))
+        if k in ZHI_HAI:
+            rel.append(("해", "작은 어긋남"))
+        if k in ZHI_PO:
+            rel.append(("파", "계획 틀어짐"))
+        if k in YUANJIN:
+            rel.append(("원진", "미묘한 서운함"))
+        sj = None
+        if tz in SAMJAE[z]:
+            sj = SAMJAE[z].index(tz)
+        rows.append(dict(zhi=ZHI[z], ko=ZHI_KO[z], animal=ZHI_ANIMAL_KO[z], animal_en=ZHI_ANIMAL_EN[z],
+                         relations=[dict(type=t, meaning=m) for t, m in rel],
+                         samjae=SAMJAE_KO[sj] if sj is not None else None,
+                         samjae_en=SAMJAE_EN[sj] if sj is not None else None))
+    lichun = kst_str(term_time(target_year, 2)) if target_year in _load_terms() else None
+    return dict(year=target_year, ganzhi=gz(ti), ko=gz_ko(ti), animal=ZHI_ANIMAL_KO[tz], animal_en=ZHI_ANIMAL_EN[tz],
+                lichun_kst=lichun, rows=rows)
+
+
+def ddi_of_birth(date_str, time_str=None, lunar=False, leap=False):
+    """생일 → 띠(입춘 기준)와, 1월 1일·설날 기준이면 달라지는지."""
+    info = resolve_input(date_str, time_str, lunar, leap)
+    yidx, _, _, _ = year_month_index(info["utc"])
+    z = yidx % 12
+    sd = info["solar_date"]
+    by_jan1 = (sd.year - 4) % 12
+    lun = solar_to_lunar(sd)
+    by_seollal = (lun[0] - 4) % 12 if lun else None
+    return dict(zhi=ZHI[z], animal=ZHI_ANIMAL_KO[z], animal_en=ZHI_ANIMAL_EN[z], year_pillar=gz(yidx),
+                by_jan1=ZHI_ANIMAL_KO[by_jan1], by_seollal=ZHI_ANIMAL_KO[by_seollal] if by_seollal is not None else None,
+                time_known=info["time_known"], z=z,
+                lichun_day=(not info["time_known"]) and kst_str(term_time(sd.year, 2))[:10] == sd.isoformat(),
+                lichun_kst=kst_str(term_time(sd.year, 2)))
+
+
+def md_ddi(r, mine=None, lang="ko"):
+    ko = lang == "ko"
+    L = []
+    if mine:
+        if ko:
+            L.append(f"## 내 띠: {mine['animal']}띠 ({mine['zhi']}, 년주 {mine['year_pillar']}, 입춘 기준)")
+            diff = []
+            if mine["by_jan1"] != mine["animal"]:
+                diff.append(f"1월 1일 기준이면 {mine['by_jan1']}띠")
+            if mine["by_seollal"] and mine["by_seollal"] != mine["animal"]:
+                diff.append(f"설날(음력 1월 1일) 기준이면 {mine['by_seollal']}띠")
+            if diff:
+                L.append(f"- ※ {', '.join(diff)}로 볼 수도 있어요. 사주와 운세에서는 **입춘 기준**이 맞아요.")
+            if mine.get("lichun_day"):
+                L.append(f"- ⚠️ 입춘 날({mine['lichun_kst']})에 태어나서, 태어난 시각에 따라 띠가 바뀌어요. 시각을 넣어 주세요(--time).")
+        else:
+            L.append(f"## Your zodiac animal: {mine['animal_en']} ({mine['zhi']}, year pillar {mine['year_pillar']}, from Start of Spring)")
+        L.append("")
+    if ko:
+        L.append(f"## {r['year']}년 {r['ganzhi']}({r['ko']})년 — {r['animal']}의 해 띠별 운세")
+        if r["lichun_kst"]:
+            L.append(f"- 이 해는 입춘 {r['lichun_kst']}부터예요(1월 1일이나 설날이 아니에요).")
+        L.append("")
+        L.append("| 띠 | 올해와의 관계 | 삼재 |")
+        L.append("|---|---|---|")
+    else:
+        L.append(f"## {r['year']} {r['ganzhi']} — year of the {r['animal_en']}: by zodiac animal")
+        L.append("")
+        L.append("| Animal | Relation to the year | Sam-jae (3 hard years) |")
+        L.append("|---|---|---|")
+    for row in r["rows"]:
+        if mine and row["zhi"] != mine["zhi"]:
+            continue
+        rel = ", ".join(f"{x['type']}({x['meaning']})" for x in row["relations"]) if ko else \
+            ", ".join(en_text(x['type']).replace("본명년", "own-sign year").replace("방합", "directional harmony") for x in row["relations"])
+        if ko:
+            L.append(f"| {row['animal']}띠 {row['zhi']} | {rel or '특별한 충·합 없음(무난)'} | {row['samjae'] or '—'} |")
+        else:
+            L.append(f"| {row['animal_en']} {row['zhi']} | {rel or 'neutral'} | {row['samjae_en'] or '—'} |")
+    if ko:
+        L.append("")
+        L.append("- 띠별 운세는 년지(태어난 해의 지지) 하나만 보는 아주 큰 그림이에요. 같은 띠라도 사주 전체에 따라 많이 달라요.")
+        L.append("- 삼재는 민간에서 조심하라는 3년이에요. 나쁜 일이 생긴다는 뜻이 아니라 무리하지 말라는 신호로 보면 돼요.")
+    return "\n".join(L)
+
+
 # ------------------------------------------------------------------ 명령
 def main(argv=None):
     for st in (sys.stdout, sys.stderr):  # 윈도우 콘솔(cp949)에서 ⚠️ 같은 글자가 깨지지 않게
@@ -1006,6 +1120,14 @@ def main(argv=None):
     t = sub.add_parser("today", help="오늘(또는 --date) 일진")
     t.add_argument("--date")
     simple(t)
+
+    dd = sub.add_parser("ddi", help="띠별 운세(삼재, 올해 띠와의 충·합)")
+    dd.add_argument("--year", type=int, help="볼 해(기본: 올해)")
+    dd.add_argument("--date", help="생년월일을 넣으면 내 띠만 (입춘 기준으로 띠를 정함)")
+    dd.add_argument("--time", help="태어난 시각(입춘 날 태어났을 때 필요)")
+    dd.add_argument("--lunar", action="store_true")
+    dd.add_argument("--leap", action="store_true")
+    simple(dd)
 
     s = sub.add_parser("terms", help="한 해의 24절기 시각(그때 한국 시계 시각)")
     s.add_argument("--year", type=int, required=True)
@@ -1088,6 +1210,15 @@ def main(argv=None):
                 print(f"{d} 일진: {out['day']}({out['day_ko']})일 · {out['month']}({out['month_ko']})월 · {out['year']}({out['year_ko']})년"
                       + (f" · 음력 {out['lunar']}" if lun else "")
                       + (f" · 오늘 {out['term_today']['kst'][11:]}에 절기 {out['term_today']['name']} — 그때부터 월주{'와 해(띠)' if out['term_today']['name'] == '입춘' else ''}가 바뀌어요" if "term_today" in out else ""))
+        elif a.cmd == "ddi":
+            y = a.year or (datetime.now(timezone.utc) + timedelta(hours=9)).year
+            if not 1900 <= y <= 2100:
+                raise SajuError("띠별 운세는 1900~2100년만 돼요")
+            r = ddi_year(y, a.lang)
+            mine = ddi_of_birth(a.date, a.time, a.lunar, a.leap) if a.date else None
+            if mine:
+                r["mine"] = {k: v for k, v in mine.items() if k != "z"}
+            print(json.dumps(r, ensure_ascii=False, indent=1) if a.json else md_ddi(r, mine, a.lang))
         elif a.cmd == "terms":
             if a.year not in _load_terms():
                 raise SajuError("절기 표는 1899~2101년만 있어요")

@@ -1,6 +1,6 @@
 ---
 name: saju
-description: Accurate Korean saju / Chinese BaZi (Four Pillars, 사주팔자, 만세력) — computes the pillars with a bundled calculator instead of guessing, then reads personality, luck cycles (대운·세운), compatibility (궁합) and today's day pillar (일진). Use whenever someone asks about 사주, 팔자, 만세력, 운세, 궁합, 대운, 일진, 띠, 오행, BaZi, Four Pillars, or gives a birth date and asks about fortune or personality.
+description: Accurate Korean saju / Chinese BaZi (Four Pillars, 사주팔자, 만세력) — computes the pillars with a bundled calculator instead of guessing, then reads personality, luck cycles (대운·세운), compatibility (궁합) and today's day pillar (일진). Use whenever someone asks about 사주, 팔자, 만세력, 운세, 궁합, 대운, 일진, 띠, 띠별 운세, 삼재, 오행, BaZi, Four Pillars, or gives a birth date and asks about fortune or personality.
 ---
 
 # 사주 (Saju / BaZi)
@@ -23,6 +23,7 @@ python3 $S/saju.py chart --date 1990-05-15 --time 14:30 --gender f
 | `chart --date YYYY-MM-DD [--time HH:MM] [--gender m/f] [--lunar] [--leap] [--place 부산] [--years 2026-2028]` | 사주 한 사람 |
 | `compat --a "1990-05-15 14:30 f" --b "1988-11-02 09:10 m"` | 궁합 (음력이면 `lunar`, 윤달이면 `leap`, 시각 모르면 `unknown`) |
 | `today [--date 2026-10-28]` | 오늘(그날) 일진 |
+| `ddi [--year 2026] [--date 1990-05-15]` | 띠별 운세: 12띠와 그해의 충·합·형·원진, 삼재. 생일을 넣으면 그 사람 띠만(입춘 기준) |
 | `terms --year 2026` | 24절기 시각 |
 | `convert --date 2000-09-01` / `convert --date 2000-08-04 --lunar` | 양력↔음력 |
 
@@ -59,6 +60,8 @@ python3 $S/saju.py chart --date 1990-05-15 --time 14:30 --gender f
 6. **대운**: 지금 대운과 다음 대운의 분위기를 씁니다.
 7. **올해(세운)**: 올해 간지의 십신과 원국과의 관계로 한 해의 주제를 씁니다.
 8. **한 줄 정리**와 실천 팁 하나.
+
+띠별 운세는 이 순서로 씁니다. 그해 간지와 입춘 날짜 → 띠마다 관계 한 줄(충은 변화, 합은 도움, 삼재는 무리하지 말 것) → "띠만 보는 큰 그림이고 사주 전체가 더 정확하다"는 말. 1~2월생은 띠가 입춘 기준으로 바뀔 수 있다고 꼭 알려 줍니다.
 
 궁합은 이 순서로 씁니다. 일간끼리의 관계(십신) → 일주끼리(배우자 자리) 합·충 → 서로 없는 오행 채워 주기 → 부딪히는 지점과 그것을 다루는 법. **"궁합 점수"를 지어내지 않습니다.** 도구가 낸 합 수와 부딪힘 수만 말합니다.
 

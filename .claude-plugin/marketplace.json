@@ -7,7 +7,7 @@
       "name": "saju",
       "source": "./plugins/saju",
       "description": "Claude calculates your Four Pillars (사주팔자/BaZi) instead of guessing: exact solar terms, Korean DST and lunar calendar, luck pillars, compatibility.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "lifestyle",
       "tags": ["saju", "bazi", "four-pillars", "korean", "astrology", "manseryeok"]
     }

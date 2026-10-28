@@ -45,6 +45,17 @@ def main():
     ok = (not dw["forward"]) and dw["start_age"] == 3 and dw["pillars"][0]["ganzhi"] == "庚辰"
     bad += not ok
     print(("통과" if ok else "실패"), "대운: 庚년생 여자 역행, 대운수 3, 첫 대운 庚辰")
+    # 띠별 운세: 2025 을사년 들삼재, 2026 병오년 눌삼재 = 돼지·토끼·양 / 2026 쥐띠 충
+    r25, r26 = saju.ddi_year(2025), saju.ddi_year(2026)
+    sj = lambda r: sorted(x["animal"] for x in r["rows"] if x["samjae"])
+    ok = (sj(r25) == sj(r26) == sorted(["돼지", "토끼", "양"]) and {x["samjae"] for x in r25["rows"] if x["samjae"]} == {"들삼재"}
+          and {x["samjae"] for x in r26["rows"] if x["samjae"]} == {"눌삼재"}
+          and any(x["type"] == "충" for x in r26["rows"][0]["relations"]))
+    bad += not ok
+    print(("통과" if ok else "실패"), "띠별: 2025 들삼재·2026 눌삼재(돼지·토끼·양), 2026 쥐띠 충")
+    ok = saju.ddi_of_birth("2000-02-03")["animal"] == "토끼" and saju.ddi_of_birth("2000-02-05")["animal"] == "용"
+    bad += not ok
+    print(("통과" if ok else "실패"), "띠는 입춘 기준: 2000-02-03 토끼띠, 2000-02-05 용띠")
     # 절기 시각(KASI 발표값)
     for y, i, want in [(2000, 2, "2000-02-04 21:40"), (1984, 2, "1984-02-05 00:19"), (2026, 2, "2026-02-04 05:02")]:
         got = saju.kst_str(saju.term_time(y, i))
